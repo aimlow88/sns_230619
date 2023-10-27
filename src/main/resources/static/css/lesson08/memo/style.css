@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+#wrap {width:1000px}
+header {height:100px; background-color: aliceblue;}
+section {height:600px; background-color: ghostwhite;}
+footer {height:100px; background-color:aliceblue;}
+.table {width:800px; height:400px}
+.input-form {width:230px; height:30px; margin-left:10px;}

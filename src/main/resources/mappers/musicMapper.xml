@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.sns.test.mapper.MusicMapper">
+ 
+ 	<select id="selectMusicList" resultType="com.sns.test.domain.MusicVO">
+ 		SELECT
+ 			`id`
+			,`singerId`
+			,`albumId`
+			,`title`
+			,`playTime`
+			,`lyricist`
+			,`composer`
+			,`createdAt`
+			,`updatedAt`
+ 		FROM
+ 			`music`
+ 	</select>
+ 
+ </mapper>
