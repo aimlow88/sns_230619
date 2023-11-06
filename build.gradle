@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'javax.servlet:jstl:1.2'  // springboot ver 2.x
 	
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
+	
 		
 	// 쿼리 결과 보기(바인딩 된 파라미터) - p6spy 라이브러리 의존성 추가
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
