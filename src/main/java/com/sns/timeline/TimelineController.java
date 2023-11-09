@@ -1,4 +1,4 @@
-package com.sns.post;
+package com.sns.timeline;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.sns.card.bo.CardBO;
 import com.sns.comment.bo.CommentBO;
 import com.sns.post.bo.PostBO;
-import com.sns.timeline.CardView;
 import com.sns.timeline.bo.TimelineBO;
+import com.sns.timeline.domain.CardView;
 
 @RequestMapping("/timeline")
 @Controller
@@ -35,7 +35,7 @@ public class TimelineController {
 	@GetMapping("/timeline-list-view")
 	public String timelineListView (Model model, HttpSession session) {
 		
-		Integer userId = (Integer) session.getAttribute("userId");
+		Integer loginUserId = (Integer) session.getAttribute("userId");
 		
 //		if (userId == null) {
 //			return "redirect:/user/sign-in-view";
@@ -52,7 +52,7 @@ public class TimelineController {
 //		List<Map<String, Object>> cardList = cardBO.getCardList();
 //		model.addAttribute("cardList", cardList);
 		
-		List<CardView> cardViewList = timelineBO.generateCardViewList();
+		List<CardView> cardViewList = timelineBO.generateCardViewList(loginUserId);
 		model.addAttribute("cardViewList", cardViewList);
 		model.addAttribute("viewName", "timeline/timeline4");
 		

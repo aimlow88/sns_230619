@@ -1,4 +1,4 @@
-package com.sns.timeline;
+package com.sns.timeline.domain;
 
 import java.util.List;
 
@@ -20,6 +20,9 @@ public class CardView {
 	private List<CommentView> commentViewList;
 	//좋아요 갯수
 	
+	private int likeCount;
+	
 	// 내가 좋아요를 눌렀는지 여부
+	private boolean filledLike;
 
 }

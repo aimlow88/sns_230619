@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import com.sns.comment.bo.CommentBO;
 import com.sns.comment.domain.Comment;
 import com.sns.comment.domain.CommentView;
+import com.sns.like.bo.LikeBO;
 import com.sns.post.bo.PostBO;
 import com.sns.post.entity.PostEntity;
-import com.sns.timeline.CardView;
+import com.sns.timeline.domain.CardView;
 import com.sns.user.bo.UserBO;
 
 @Service
@@ -26,17 +27,21 @@ public class TimelineBO {
 	@Autowired
 	private CommentBO commentBO;
 	
+	@Autowired
+	private LikeBO likeBO;
 	
-	public List<CardView> generateCardViewList(){
+	
+	public List<CardView> generateCardViewList(Integer loginUserId){
 		
 		List<CardView> cardViewList = new ArrayList<>();
 		
 		List<PostEntity> postList = postBO.getPostList();
-
+		
 		for (PostEntity post : postList) {
 			
 			CardView cardView = new CardView();
 			userBO.getUserEntityByUserId(post.getUserId());
+			
 			
 			List<CommentView> commentViewList = new ArrayList<>();
 
@@ -54,6 +59,10 @@ public class TimelineBO {
 			cardView.setCommentViewList(commentViewList);
 			
 			cardViewList.add(cardView);
+			
+			cardView.setLikeCount(likeBO.getCountByPostId(post.getId()));
+
+			cardView.setFilledLike(likeBO.isLike(loginUserId, post.getId()));
 		}
 		
 		return cardViewList;

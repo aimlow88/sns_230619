@@ -36,7 +36,7 @@
 			
 				<div class="bg-light d-flex justify-content-between align-items-center">
 					<span class="display-4 font-weight-bold ml-4">${card.user.loginId}</span>
-					<input type="button" id="deleteBtn" name="deleteBtn" class="btn btn-warning mr-4" value="•••">
+					<input type="button" id="deleteBtn" name="deleteBtn" class="deleteBtn btn btn-warning mr-4" value="•••" data-login-user-id="${userId}" data-post-id="${card.post.id}" data-post-user-id="${card.user.id}">
 				</div>
 			
 				<div class="d-flex justify-content-center mt-3">
@@ -46,8 +46,19 @@
 				<br>
 			
 				<div class="d-flex align-items-center">
-					<img src="/static/img/sns/heart_icon.png" alt="좋아요 이미지" width="30px">
-					<span class="display-5 font-weight-bold ml-3"> 좋아요 11개</span>
+					<c:choose>
+						<c:when test="${card.filledLike eq true}">
+							<button type="button" class="toggleLikeBtn btn" data-login-userid=${card.user.id} data-post-id=${card.post.id} data-filled-like=${card.filledLike}>
+								<img src="/static/img/sns/heart_icon.png" alt="좋아요 이미지" width="30px">
+							</button>
+						</c:when>
+						<c:otherwise>
+							<button type="button" class="toggleLikeBtn btn" data-login-userid=${card.user.id} data-post-id=${card.post.id} data-filled-like=${card.filledLike}>
+								<img src="/static/img/sns/heart-icon.png" alt="좋아요 이미지" width="30px">
+							</button>
+						</c:otherwise>
+					</c:choose>
+					<span class="display-5 font-weight-bold ml-3"> 좋아요 ${card.likeCount}개</span>
 				</div>
 			
 				<br>
@@ -74,8 +85,8 @@
 								<td>
 									<div class="d-flex justify-content-between align-items-center">
 										${commentView.comment.content}
-										<button type="button" id="delContentBtn" name="delContentBtn" class="btn" value="card.post.id">
-											<img src="/static/img/sns/x-icon.png" alt="삭게 이미지" width=15></a>
+										<button type="button" id="delCommentBtn" name="delCommentBtn" class="delCommentBtn btn" data-comment-userid=${commentView.comment.userId} data-comment-id=${commentView.comment.id}>
+											<img src="/static/img/sns/x-icon.png" alt="삭제 이미지" width=15></a>
 										</button>
 									</div>
 								</td>
@@ -183,7 +194,8 @@
 					,success:function(data){
 						if (data.code == 200){
 							alert("댓글이 성공적으로 게시되었습니다.");
-							location.href="/timeline/timeline-list-view";
+							//location.href="/timeline/timeline-list-view";
+							location.reload(true);
 						} else {
 							alert(data.errorMessage);
 						}
@@ -191,6 +203,107 @@
 					, error:function(request, status, error){
 						alert("댓글 작성을 실패하였습니다. - 관리자 문의");
 					}
+				});
+				
+			});
+			
+			$('.delCommentBtn').on('click', function(){
+
+				let commentId = $(this).data('comment-id');
+				let commentUserId = $(this).data('comment-userid');
+				
+				//alert(commentUserId);
+				//let sessionUserId = session.getAttribute("userId"};
+				
+				$.ajax({
+					type:"DELETE"         // 삭제시 type은 delete로 왜?
+					, url:"/comment/delete"
+					, data:{"commentId":commentId, "commentUserId":commentUserId}
+					, success:function(data){
+						if (data.code == 200) {
+							alert("삭제하였습니다.");
+							location.reload(true);   // scroll되지 않고 그 자리에 머문다. 
+						} else {
+							alert(data.errorMessage);
+						}
+					}
+					, error:function(request, status, error){
+						alert("댓글 삭제를 실패하였습니다. - 관리자 문의")
+					}
+				});
+								
+			});
+				
+			$('.toggleLikeBtn').on('click', function(){
+				
+				let loginUserId = $(this).data('login-userid');
+				let postId = $(this).data('post-id');
+				let filledLike = $(this).data("filled-like");
+				
+				//alert(loginUserId + ", " +postId + ", " + filledLike);
+				
+				if (!loginUserId){
+					alert("로그인 해주세요.");
+					return;
+				}
+				
+				$.ajax({
+					
+					type:"get"
+					, url:"/like/toggle-like" + "/" + postId + "/" +filledLike
+					//, data:{"postId":postId, "filledLike":filledLike}
+					, success:function(data){
+						if (data.code == 200) {
+							// alert("성공하였습니다.");
+							location.reload(true);
+						} else {
+							alert(data.errorMessage);
+						}
+					}
+					, error:function(request, status, error){
+						alert("'좋아요'가 눌러지지 않았습니다. - 관리자 문의" );
+					}
+					
+				});
+			
+			});
+			
+			
+			// 게시물 삭제
+			$('.deleteBtn').on('click', function(){
+				
+				let loginUserId = $(this).data("login-user-id");
+				let postUserId = $(this).data("post-user-id");
+				let postId = $(this).data("post-id");
+				
+				alert("loginUserId : " + loginUserId + ", postId : " + postId + ", postUserId : " + postUserId);
+				
+				if (loginUserId == ""){
+					alert("로그인을 해주세요.");
+					return;
+				}
+				
+				if (loginUserId != postUserId){
+					alert("본인의 글이 아니면 삭제할 수 없습니다.");
+					return;
+				}
+				
+				$.ajax({
+					
+					type:"DELETE"
+					, url:"/post/delete"
+					, data:{"postId":postId, "postUserId":postUserId}
+					, success:function(data){
+						if (data.code == 200){
+							alert("삭제 성공");
+							location.reload(true);
+						} else {
+							alert(data.erroeMessage);
+						}
+					  }
+					, error:function(request, ststus, error){
+						alert("알 수 없는 오류가 발생하였습니다. - 관리자 문의")
+					  }
 				});
 				
 			});

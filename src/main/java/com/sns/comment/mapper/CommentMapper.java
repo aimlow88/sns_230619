@@ -11,6 +11,8 @@ public interface CommentMapper {
 	
 	public void insertComment(Comment comment);
 	
+	public void deleteCommentById(int id);
+	
 	public List<Comment> selectCommentList();
 	
 	public List<Comment> selectCommentListByPostId(int postId);

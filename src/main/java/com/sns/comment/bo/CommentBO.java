@@ -18,6 +18,10 @@ public class CommentBO {
 		commentMapper.insertComment(comment);
 	}
 	
+	public void delCommentById(int id) {
+		commentMapper.deleteCommentById(id);
+	}
+	
 	public List<Comment> getCommentList() {
 		return commentMapper.selectCommentList();
 	}
